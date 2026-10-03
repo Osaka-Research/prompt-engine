@@ -1,0 +1,243 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(400, 400)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.18, 0.2, 0.22, 1)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ground"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ground"]
+friction = 0.7
+bounce = 0.1
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_default"]
+sky_top_color = Color(0.28, 0.45, 0.75, 1)
+sky_horizon_color = Color(0.65, 0.75, 0.85, 1)
+sky_curve = 0.15
+ground_bottom_color = Color(0.2, 0.19, 0.17, 1)
+ground_horizon_color = Color(0.65, 0.75, 0.85, 1)
+ground_curve = 0.15
+sun_angle_max = 30.0
+sun_curve = 0.15
+
+[sub_resource type="Sky" id="Sky_default"]
+sky_material = SubResource("ProceduralSkyMaterial_default")
+
+[sub_resource type="Environment" id="Environment_default"]
+background_mode = 2
+sky = SubResource("Sky_default")
+ambient_light_source = 3
+ambient_light_energy = 1.0
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.05
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prompt"]
+bg_color = Color(0.1, 0.1, 0.12, 0.85)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_default")
+
+[node name="CameraRig" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 8)
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 0.9848, 0.1736, 0, -0.1736, 0.9848, 0, 0, 0)
+current = true
+fov = 70.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 5, 0)
+light_energy = 1.2
+shadow_enabled = true
+shadow_blur = 1.5
+
+[node name="Ground" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_ground")
+
+[node name="GroundMesh" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("PlaneMesh_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_ground")
+
+[node name="GroundCollision" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("WorldBoundaryShape3D_ground")
+
+[node name="ObjectsRoot" type="Node3D" parent="."]
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ObjectPanel" type="VBoxContainer" parent="UI"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 16.0
+offset_top = -140.0
+offset_right = 176.0
+offset_bottom = 140.0
+theme_override_constants/separation = 4
+
+[node name="ObjectPanelTitle" type="Label" parent="UI/ObjectPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.7)
+theme_override_font_sizes/font_size = 13
+text = "IN SCENE (tap to target)"
+
+[node name="ObjectList" type="ItemList" parent="UI/ObjectPanel"]
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 16
+select_mode = 1
+allow_reselect = true
+
+[node name="ObjectPanelHint" type="Label" parent="UI/ObjectPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 2
+text = "tap to target, tap 2+ to describe a relation between them"
+
+[node name="StatusLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 24.0
+offset_right = 300.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="MoveControls" type="GridContainer" parent="UI"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -260.0
+offset_right = 190.0
+offset_bottom = -100.0
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 3
+
+[node name="Spacer1" type="Control" parent="UI/MoveControls"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+
+[node name="MoveForward" type="Button" parent="UI/MoveControls"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.6)
+theme_override_font_sizes/font_size = 20
+text = "▲"
+
+[node name="Spacer2" type="Control" parent="UI/MoveControls"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+
+[node name="MoveLeft" type="Button" parent="UI/MoveControls"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.6)
+theme_override_font_sizes/font_size = 20
+text = "◀"
+
+[node name="MoveBack" type="Button" parent="UI/MoveControls"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.6)
+theme_override_font_sizes/font_size = 20
+text = "▼"
+
+[node name="MoveRight" type="Button" parent="UI/MoveControls"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.6)
+theme_override_font_sizes/font_size = 20
+text = "▶"
+
+[node name="DriveControls" type="GridContainer" parent="UI"]
+visible = false
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -260.0
+offset_right = 190.0
+offset_bottom = -100.0
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 3
+
+[node name="GeneratedControls" type="GridContainer" parent="UI"]
+anchors_preset = 12
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -260.0
+offset_right = -20.0
+offset_bottom = -100.0
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 3
+
+[node name="LookHint" type="Label" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -190.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.55)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 2
+text = "drag anywhere to look"
+
+[node name="PromptRow" type="HBoxContainer" parent="UI"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+theme_override_constants/separation = 10
+
+[node name="PromptBox" type="LineEdit" parent="UI/PromptRow"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_prompt")
+theme_override_font_sizes/font_size = 18
+placeholder_text = "add an apple, make it fly..."
+
+[node name="SubmitButton" type="Button" parent="UI/PromptRow"]
+custom_minimum_size = Vector2(90, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Send"

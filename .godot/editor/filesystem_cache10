@@ -1,0 +1,15 @@
+78098b89c88a74ebe8c20117b8754620
+::res://::1788003219
+export_presets.cfg::TextFile::-1::1788003124::0::1::::<><><>0<>0<><>::
+README.md::TextFile::-1::1788003219::0::1::::<><><>0<>0<><>::
+::res://build/::1788038440
+::res://scenes/::1788039307
+main.tscn::PackedScene::-1::1788039307::0::1::::<><><>0<>0<><>::res://scripts/main.gd
+::res://scripts/::1788039416
+main.gd::GDScript::3488451077184717136::1788039416::0::1::::<>Node3D<><>0<>0<><>::
+projectile.gd::GDScript::2690132654546482267::1788015304::0::1::::<>RigidBody3D<><>0<>0<><>::
+::res://scripts/tools/::1788039539
+smoke_test.gd::GDScript::6239252459048068971::1788039539::0::1::::<>SceneTree<><>0<>0<><>::
+::res://server/::1788037651
+prompt_server.log::TextFile::-1::1788039620::0::1::::<><><>0<>0<><>::
+::res://server/__pycache__/::1788037658
